@@ -19,19 +19,10 @@ async function ProfilePage() {
         {/* image input container */}
         <ImageInputContainer
           image={profile.profileImage}
-          text="Update Image"
+          text="Update Profile Picture"
           action={updateProfileImageAction}
-          name={profile.firstName}
+          name={profile.username}
         />
-        {/* <div className="relative size-28 border-4 rounded-md border-primary group overflow-hidden">
-          <Image
-            src={profile.profileImage}
-            alt="Profile Image"
-            className="rounded-sm object-cover group-hover:scale-110 duration-200"
-            fill
-            priority
-          />
-        </div> */}
 
         <FormContainer action={updateProfileAction}>
           <div className="grid gap-4 md:grid-cols-2 mt-4 ">

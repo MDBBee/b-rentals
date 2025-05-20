@@ -44,14 +44,14 @@ function ImageInputContainer(props: ImageInputContainerProps) {
         size="sm"
         onClick={() => setUpdateFormVisible((prev) => !prev)}
       >
-        {text}
+        {!isUpdateFormVisible ? text : 'Cancel Update'}
       </Button>
       {isUpdateFormVisible && (
         <div className="max-w-lg mt-4 p-0">
           <FormContainer action={action}>
             {props.children}
             <ImageInput />
-            <SubmitButton size="sm" />
+            <SubmitButton size="sm" text="Update Image" />
           </FormContainer>
         </div>
       )}
