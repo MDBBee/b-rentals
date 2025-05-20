@@ -20,7 +20,9 @@ function FormContainer({
   const { toast } = useToast();
 
   useEffect(() => {
-    if (state.message) {
+    if (state.message && state.message.includes('!')) {
+      toast({ description: state.message, variant: 'destructive' });
+    } else if (state.message) {
       toast({ description: state.message });
     }
   }, [state]);
