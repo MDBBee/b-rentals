@@ -1,12 +1,17 @@
 'use server';
 
-import { imageSchema, profileSchema, validateWithZodSchema } from './schemas';
+import {
+  imageSchema,
+  profileSchema,
+  propertySchema,
+  validateWithZodSchema,
+} from './schemas';
 
 import db from './db';
 import { auth, clerkClient, currentUser } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { uploadImage } from './supabsae';
+import { uploadImage } from './supabase';
 
 // Utils funcs
 // a) get auth user
@@ -89,7 +94,7 @@ export const createProfileAction = async (
   redirect('/');
 };
 
-// Fetch Profile
+// UpdateProfile
 
 export const updateProfileAction = async (
   prevState: any,
@@ -123,10 +128,10 @@ export const updateProfileImageAction = async (
 
   try {
     const rawImage = formData.get('image') as File;
-
     const validatedImage = validateWithZodSchema(imageSchema, {
       image: rawImage,
     });
+
     const fullPath = await uploadImage(validatedImage.image);
 
     await db.profile.update({
@@ -142,4 +147,25 @@ export const updateProfileImageAction = async (
   } catch (error) {
     return renderError(error);
   }
+};
+
+// Create property action
+export const createPropertyAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  const user = await getAuthUser();
+
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(propertySchema, rawData);
+    // Image Validation & Upload
+    const rawImage = formData.get('image') as File;
+    const validateImage = validateWithZodSchema(imageSchema, {
+      image: rawImage,
+    });
+  } catch (error) {
+    return renderError(error);
+  }
+  redirect('/');
 };
