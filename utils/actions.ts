@@ -183,6 +183,10 @@ export const fetchProperties = async ({
   search?: string;
   category?: string;
 }) => {
+  // Remember to Remove
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1000);
+  });
   const properties = await db.property.findMany({
     where: {
       category,
