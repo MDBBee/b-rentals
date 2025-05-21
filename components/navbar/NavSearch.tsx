@@ -19,7 +19,8 @@ function NavSearch() {
     } else {
       params.delete('search');
     }
-    replace(`${pathname}?${params.toString()}`);
+    // replace(`${pathname}?${params.toString()}`);
+    replace(`/?${params.toString()}`);
   }, 300);
 
   useEffect(() => {
