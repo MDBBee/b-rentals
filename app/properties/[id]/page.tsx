@@ -6,6 +6,8 @@ import ShareButton from '@/components/properties/ShareButton';
 import { fetchPropertyDetails } from '@/utils/actions';
 import { redirect } from 'next/navigation';
 import BookingCalender from '@/components/properties/booking/BookingCalander';
+import PropertyDetails from '@/components/properties/PropertyDetails';
+import UserInfo from '@/components/properties/UserInfo';
 
 async function PropertyDetailsPage({ params }: { params: { id: string } }) {
   const property = await fetchPropertyDetails(params.id);
@@ -13,6 +15,9 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
   if (!property) redirect('/');
   const { baths, bedrooms, beds, guests } = property;
   const details = { baths, bedrooms, beds, guests };
+
+  const firstName = property.profile.firstName;
+  const profileImage = property.profile.profileImage;
 
   return (
     <section>
@@ -38,6 +43,8 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
           <BookingCalender />
         </div>
       </section>
+      <PropertyDetails details={details} />
+      <UserInfo profile={{ firstName, profileImage }} />
     </section>
   );
 }
