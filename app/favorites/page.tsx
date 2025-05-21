@@ -10,7 +10,9 @@ async function FavoritesPage() {
     return <EmptyList />;
   }
 
-  const reFav: PropertyCardProps[] = favorites.filter((f) => f !== null);
+  const reFav: PropertyCardProps[] = favorites.filter(
+    (f): f is PropertyCardProps => f !== null
+  );
 
   return <PropertiesList properties={reFav} />;
 }
