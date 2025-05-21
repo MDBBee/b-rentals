@@ -40,12 +40,12 @@ function validateFile() {
     .instanceof(File)
     .refine((file) => {
       return !file || file.size <= maxUploadSize;
-    }, `File size must be less than 1 MB`)
+    }, `Image File size must be less than 1 MB`)
     .refine((file) => {
       return (
         !file || acceptedFileTypes.some((type) => file.type.startsWith(type))
       );
-    }, 'File must be an image');
+    }, 'Image File must be an image');
 }
 
 // Property model schema
