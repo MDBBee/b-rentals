@@ -55,6 +55,6 @@ model Favorite {
   updatedAt  DateTime  @updatedAt
   Profile    Profile?  @relation(fields: [profileId], references: [clerkId])
   profileId  String?
-  Property   Property? @relation(fields: [propertyId], references: [id])
+  property   Property? @relation(fields: [propertyId], references: [id])
   propertyId String?
 }

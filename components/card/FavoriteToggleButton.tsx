@@ -1,5 +1,3 @@
-import { FaHeart } from 'react-icons/fa';
-import { Button } from '@/components/ui/button';
 import { auth } from '@clerk/nextjs/server';
 import { CardSignInButton } from '../form/Buttons';
 import FavoriteToggleForm from './FavoriteToggleForm';
