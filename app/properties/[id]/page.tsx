@@ -3,7 +3,7 @@ import PropertyRating from '@/components/card/PropertyRating';
 import BreadCrumbs from '@/components/properties/BreadCrumbs';
 import ImageContainer from '@/components/properties/ImageContainer';
 import ShareButton from '@/components/properties/ShareButton';
-import { fetchPropertyDetails } from '@/utils/actions';
+import { fetchPropertyDetails, findExistingReview } from '@/utils/actions';
 import { redirect } from 'next/navigation';
 import BookingCalender from '@/components/properties/booking/BookingCalander';
 import PropertyDetails from '@/components/properties/PropertyDetails';
@@ -14,6 +14,8 @@ import Amenities from '@/components/properties/Amenities';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 import SubmitReview from '@/components/reviews/SubmitReview';
+import PropertyReviews from '@/components/reviews/PropertyReviews';
+import { auth } from '@clerk/nextjs/server';
 const DynamicMap = dynamic(
   () => import('@/components/properties/PropertyMap'),
   {
@@ -31,6 +33,12 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
 
   const firstName = property.profile.firstName;
   const profileImage = property.profile.profileImage;
+
+  // Checking if user === property owner/Creator
+  const { userId } = auth();
+  const isNotOwner = property.profile.clerkId !== userId;
+  const reviewDoesNotExist =
+    userId && isNotOwner && !(await findExistingReview(userId, property.id));
 
   return (
     <section>
@@ -63,7 +71,8 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
       <Amenities amenities={property.amenities} />
       <DynamicMap countryCode={property.country} />
       {/* Reviews */}
-      <SubmitReview propertyId={property.id} />
+      {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
+      <PropertyReviews propertyId={property.id} />
     </section>
   );
 }
