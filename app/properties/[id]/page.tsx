@@ -5,7 +5,7 @@ import ImageContainer from '@/components/properties/ImageContainer';
 import ShareButton from '@/components/properties/ShareButton';
 import { fetchPropertyDetails, findExistingReview } from '@/utils/actions';
 import { redirect } from 'next/navigation';
-import BookingCalender from '@/components/properties/booking/BookingCalander';
+import BookingCalender from '@/components/booking/BookingCalander';
 import PropertyDetails from '@/components/properties/PropertyDetails';
 import UserInfo from '@/components/properties/UserInfo';
 import Description from '@/components/properties/Description';

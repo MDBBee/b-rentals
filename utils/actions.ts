@@ -407,3 +407,21 @@ export async function fetchPropertyRating(propertyId: string) {
     count: result[0]?._count.rating ?? 0,
   };
 }
+
+// Fetch  Property details with bookings
+export const fetchPropertyBookingDetails = (id: string) => {
+  return db.property.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      profile: true,
+      bookings: {
+        select: {
+          checkIn: true,
+          checkOut: true,
+        },
+      },
+    },
+  });
+};
