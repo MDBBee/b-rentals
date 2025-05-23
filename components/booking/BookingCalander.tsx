@@ -14,10 +14,19 @@ import {
 
 function BookingCalendar() {
   const currentDate = new Date();
-
   const [range, setRange] = useState<DateRange | undefined>(defaultSelected);
+  const { toast } = useToast();
 
+  // Normal blocking
+  const bookings = useProperty((state) => state.bookings);
+  const blockedPeriods = generateBlockedPeriods({
+    bookings,
+    today: currentDate,
+  });
+  // complex blocking due to default
+  const unavailableDates = generateDisabledDates(blockedPeriods);
   useEffect(() => {
+    const selectedRange = generateDateRange(range);
     useProperty.setState({ range });
   }, [range]);
 
@@ -28,6 +37,7 @@ function BookingCalendar() {
       selected={range}
       onSelect={setRange}
       className="mb-4"
+      disabled={blockedPeriods}
     />
   );
 }

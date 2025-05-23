@@ -14,8 +14,6 @@ export const generateBlockedPeriods = ({
   today: Date;
 }) => {
   today.setHours(0, 0, 0, 0); // Set the time to 00:00:00.000
-  console.log('******', today);
-  console.log('******GetTime', today.getTime());
 
   const disabledDays: DateRange[] = [
     ...bookings.map((booking) => ({
@@ -33,8 +31,8 @@ export const generateBlockedPeriods = ({
 export const generateDateRange = (range: DateRange | undefined): string[] => {
   if (!range || !range.from || !range.to) return [];
 
-  let currentDate = new Date(range.from);
   const endDate = new Date(range.to);
+  let currentDate = new Date(range.from);
   const dateRange: string[] = [];
   console.log('**CurrentIsos****', currentDate.toISOString());
 
@@ -68,6 +66,7 @@ export const generateDisabledDates = (
         continue;
       }
       const dateString = currentDate.toISOString().split('T')[0];
+      console.log(currentDate.toISOString());
       disabledDates[dateString] = true;
       currentDate.setDate(currentDate.getDate() + 1);
     }
