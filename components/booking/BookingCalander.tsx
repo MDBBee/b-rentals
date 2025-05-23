@@ -24,23 +24,21 @@ function BookingCalendar() {
     bookings,
     today: currentDate,
   });
-  console.log('blockedPeriods:', blockedPeriods);
 
   // complex blocking due to default
   // {date:true, date:true...}
   const unavailableDates = generateDisabledDates(blockedPeriods);
-  console.log('unavailableDates:', unavailableDates);
 
   useEffect(() => {
     // ["date","date"....]
     const selectedRange = generateDateRange(range);
-    console.log('selectedRange:', selectedRange);
 
     const isDisabledDateIncluded = selectedRange.some((date) => {
       if (unavailableDates[date]) {
         setRange(defaultSelected);
         toast({
           description: 'Some dates are already booked. Please select again.',
+          variant: 'destructive',
         });
         return true;
       }
