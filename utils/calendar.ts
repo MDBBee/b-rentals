@@ -66,7 +66,7 @@ export const generateDisabledDates = (
         continue;
       }
       const dateString = currentDate.toISOString().split('T')[0];
-      console.log(currentDate.toISOString());
+      //   console.log('IsoSplit*******', currentDate.toISOString());
       disabledDates[dateString] = true;
       currentDate.setDate(currentDate.getDate() + 1);
     }

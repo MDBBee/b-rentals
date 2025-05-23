@@ -19,14 +19,33 @@ function BookingCalendar() {
 
   // Normal blocking
   const bookings = useProperty((state) => state.bookings);
+  // [{from:_to:_}, {from:_to:_}...]
   const blockedPeriods = generateBlockedPeriods({
     bookings,
     today: currentDate,
   });
+  console.log('blockedPeriods:', blockedPeriods);
+
   // complex blocking due to default
+  // {date:true, date:true...}
   const unavailableDates = generateDisabledDates(blockedPeriods);
+  console.log('unavailableDates:', unavailableDates);
+
   useEffect(() => {
+    // ["date","date"....]
     const selectedRange = generateDateRange(range);
+    console.log('selectedRange:', selectedRange);
+
+    const isDisabledDateIncluded = selectedRange.some((date) => {
+      if (unavailableDates[date]) {
+        setRange(defaultSelected);
+        toast({
+          description: 'Some dates are already booked. Please select again.',
+        });
+        return true;
+      }
+      return false;
+    });
     useProperty.setState({ range });
   }, [range]);
 
