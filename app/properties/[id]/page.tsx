@@ -3,7 +3,10 @@ import PropertyRating from '@/components/card/PropertyRating';
 import BreadCrumbs from '@/components/properties/BreadCrumbs';
 import ImageContainer from '@/components/properties/ImageContainer';
 import ShareButton from '@/components/properties/ShareButton';
-import { fetchPropertyDetails, findExistingReview } from '@/utils/actions';
+import {
+  fetchPropertyBookingDetails,
+  findExistingReview,
+} from '@/utils/actions';
 import { redirect } from 'next/navigation';
 import BookingCalender from '@/components/booking/BookingCalander';
 import PropertyDetails from '@/components/properties/PropertyDetails';
@@ -24,8 +27,13 @@ const DynamicMap = dynamic(
   }
 );
 
+const DynamicBookingWrapper = dynamic(
+  () => import('@/components/booking/BookingWrapper'),
+  { ssr: false, loading: () => <Skeleton className="h-[200px] w-full" /> }
+);
+
 async function PropertyDetailsPage({ params }: { params: { id: string } }) {
-  const property = await fetchPropertyDetails(params.id);
+  const property = await fetchPropertyBookingDetails(params.id);
 
   if (!property) redirect('/');
   const { baths, bedrooms, beds, guests } = property;
@@ -58,21 +66,25 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
             <h1 className="text-xl font-bold">{property.name}</h1>
             <PropertyRating inPage propertyId={property.id} />
           </div>
+          <PropertyDetails details={details} />
+          <UserInfo profile={{ firstName, profileImage }} />
+          <Separator className="mt-4" />
+          <Description description={property.description} />
+          <Amenities amenities={property.amenities} />
+          <DynamicMap countryCode={property.country} />
+          {/* Reviews */}
+          {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
+          <PropertyReviews propertyId={property.id} />
         </div>
         <div className="lg:col-span-4 flex flex-col items-center">
           {/* calendar */}
-          <BookingCalender />
+          <DynamicBookingWrapper
+            propertyId={property.id}
+            price={property.price}
+            bookings={property.bookings}
+          />
         </div>
       </section>
-      <PropertyDetails details={details} />
-      <UserInfo profile={{ firstName, profileImage }} />
-      <Separator className="mt-4" />
-      <Description description={property.description} />
-      <Amenities amenities={property.amenities} />
-      <DynamicMap countryCode={property.country} />
-      {/* Reviews */}
-      {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
-      <PropertyReviews propertyId={property.id} />
     </section>
   );
 }
