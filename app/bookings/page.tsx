@@ -19,10 +19,12 @@ import { fetchBookings, deleteBookingAction } from '@/utils/actions';
 
 async function BookingsPage() {
   const bookings = await fetchBookings();
+  console.log(bookings);
 
   if (bookings.length === 0) {
     return <EmptyList />;
   }
+
   return (
     <div className="mt-16">
       <h4 className="mb-4 capitalize">total bookings : {bookings.length}</h4>
