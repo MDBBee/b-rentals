@@ -513,7 +513,9 @@ export const fetchRentals = async () => {
   const user = await getAuthUser();
   const rentals = await db.property.findMany({
     where: {
-      profileId: user.id,
+      profile: {
+        clerkId: user.id,
+      },
     },
     select: {
       id: true,
