@@ -10,18 +10,20 @@ import PriceInput from '@/components/form/PriceInput';
 import TextAreaInput from '@/components/form/TextAreaInput';
 import CountriesInput from '@/components/form/CountriesInput';
 import CounterInput from '@/components/form/CounterInput';
-import AmenitiesInput from '@/components/form/AmenitiesInput';
+
 import { SubmitButton } from '@/components/form/Buttons';
 import { redirect } from 'next/navigation';
 import { type Amenity } from '@/utils/amenities';
 import ImageInputContainer from '@/components/form/ImageInputContainer';
+// import Amenities from '@/components/properties/Amenities';
+import AmenitiesInput from '@/components/form/AmenitiesInput';
 
 async function EditRentalPage({ params }: { params: { id: string } }) {
   const property = await fetchRentalDetails(params.id);
 
   if (!property) redirect('/');
 
-  const defaultAmenities: Amenity[] = JSON.parse(property.amenities);
+  const defaultAmenities: Amenity[] = JSON.parse(property.amenities as string);
 
   return (
     <section>

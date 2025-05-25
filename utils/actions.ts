@@ -160,9 +160,12 @@ export const createPropertyAction = async (
 
   try {
     const rawData = Object.fromEntries(formData);
+
     const validatedFields = validateWithZodSchema(propertySchema, rawData);
+
     // Image Validation & Upload
     const rawImage = formData.get('image') as File;
+
     const validatedImage = validateWithZodSchema(imageSchema, {
       image: rawImage,
     });
