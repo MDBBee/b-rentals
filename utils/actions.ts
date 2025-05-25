@@ -583,7 +583,7 @@ export const fetchRentalDetails = async (propertyId: string) => {
   return db.property.findUnique({
     where: {
       id: propertyId,
-      profileId: user.id,
+      profile: { clerkId: user.id },
     },
   });
 };
