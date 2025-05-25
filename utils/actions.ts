@@ -388,6 +388,7 @@ export const findExistingReview = async (
 };
 
 // Fetch properties rating
+// GroupBy - Uniqueness of a field
 export async function fetchPropertyRating(propertyId: string) {
   const result = await db.review.groupBy({
     by: ['propertyId'],
