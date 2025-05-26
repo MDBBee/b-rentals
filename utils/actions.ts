@@ -470,6 +470,7 @@ export const createBookingAction = async ({
         propertyId,
       },
     });
+
     bookingId = booking.id;
   } catch (error) {
     return renderError(error);
