@@ -22,6 +22,7 @@ export default function CheckoutPage() {
     const response = await axios.post('/api/payment', {
       bookingId: bookingId,
     });
+
     return response.data.clientSecret;
   }, []);
 

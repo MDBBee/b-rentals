@@ -4,8 +4,8 @@ import {
   ChartsLoadingContainer,
   StatsLoadingContainer,
 } from '@/components/admin/Loading';
-
 import { Suspense } from 'react';
+
 async function AdminPage() {
   return (
     <>
