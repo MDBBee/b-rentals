@@ -443,6 +443,7 @@ export const createBookingAction = async ({
   checkOut: Date;
 }) => {
   const user = await getAuthUser();
+  let bookingId: null | string = null;
 
   const property = await db.property.findUnique({
     where: { id: propertyId },
@@ -469,10 +470,11 @@ export const createBookingAction = async ({
         propertyId,
       },
     });
+    bookingId = booking.id;
   } catch (error) {
     return renderError(error);
   }
-  redirect('/bookings');
+  redirect(`/checkout?bookingId=${bookingId}`);
 };
 
 // Fetch Bookings
