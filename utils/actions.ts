@@ -669,3 +669,27 @@ export const fetchReservations = async () => {
 
   return res;
 };
+
+// Admin page
+// Admin auth
+const getAdminUser = async () => {
+  const user = await getAuthUser();
+
+  if (user.id !== process.env.ADMIN_USER_ID) redirect('/');
+  return user;
+};
+
+// fetch stats for Admin
+export const fetchStats = async () => {
+  await getAdminUser();
+
+  const usersCount = await db.profile.count();
+  const propertiesCount = await db.property.count();
+  const bookingsCount = await db.booking.count();
+
+  return {
+    usersCount,
+    propertiesCount,
+    bookingsCount,
+  };
+};
