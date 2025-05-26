@@ -664,7 +664,6 @@ export const fetchReservations = async () => {
   const user = await getAuthUser();
   const res = await db.booking.findMany({
     where: {
-      property: { profile: { clerkId: user.id } },
       paymentStatus: true,
     },
     orderBy: { createdAt: 'asc' },
@@ -749,4 +748,31 @@ export const fetchChartsData = async () => {
   // console.log('***___***FDB:', bookingsPerMonth);
 
   return bookingsPerMonth;
+};
+
+// Fect reservation stats
+export const fetchReservationStats = async () => {
+  const user = await getAuthUser();
+
+  const properties = await db.property.count({
+    where: {
+      profile: { clerkId: user.id },
+    },
+  });
+
+  const totals = await db.booking.aggregate({
+    _sum: {
+      orderTotal: true,
+      totalNights: true,
+    },
+    where: {
+      profile: { clerkId: user.id },
+    },
+  });
+
+  return {
+    properties,
+    nights: totals._sum.totalNights || 0,
+    amount: totals._sum.orderTotal || 0,
+  };
 };
