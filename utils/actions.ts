@@ -722,6 +722,7 @@ export const fetchChartsData = async () => {
     // console.log('***___***TOF:', typeof date);
 
     const existingEntry = total.find((entry) => entry.date === date);
+
     if (existingEntry) {
       existingEntry.count += 1;
     } else {
@@ -729,5 +730,7 @@ export const fetchChartsData = async () => {
     }
     return total;
   }, [] as Array<{ date: string; count: number }>);
+  // console.log('***___***FDB:', bookingsPerMonth);
+
   return bookingsPerMonth;
 };
