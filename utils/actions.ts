@@ -14,6 +14,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { uploadImage } from './supabase';
 import { calculateTotals } from './calculateTotals';
+import { formatDate } from './format';
 
 // Utils funcs
 // a) get auth user
@@ -692,4 +693,41 @@ export const fetchStats = async () => {
     propertiesCount,
     bookingsCount,
   };
+};
+
+// fetch chatData for Admin
+
+export const fetchChartsData = async () => {
+  await getAdminUser();
+  const date = new Date();
+  date.setMonth(date.getMonth() - 6);
+  const sixMonthsAgo = date;
+  // console.log('***___***SMA:', sixMonthsAgo);
+  // console.log('***___***TOF:', typeof sixMonthsAgo);
+
+  const bookings = await db.booking.findMany({
+    where: {
+      createdAt: {
+        gte: sixMonthsAgo,
+      },
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+
+  let bookingsPerMonth = bookings.reduce((total, current) => {
+    const date = formatDate(current.createdAt, true);
+    // console.log('***___***FDB:', date);
+    // console.log('***___***TOF:', typeof date);
+
+    const existingEntry = total.find((entry) => entry.date === date);
+    if (existingEntry) {
+      existingEntry.count += 1;
+    } else {
+      total.push({ date, count: 1 });
+    }
+    return total;
+  }, [] as Array<{ date: string; count: number }>);
+  return bookingsPerMonth;
 };
