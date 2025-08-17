@@ -9,9 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Profile {
@@ -46,7 +45,7 @@ model Property {
   amenities   String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile     Profile    @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
   profileId   String
   favorites   Favorite[]
   reviews     Review[]
@@ -54,29 +53,35 @@ model Property {
 }
 
 model Favorite {
-  id         String    @id @default(uuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  Profile    Profile?  @relation(fields: [profileId], references: [clerkId])
-  profileId  String?
-  property   Property? @relation(fields: [propertyId], references: [id])
-  propertyId String?
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile   Profile @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
+  profileId String
+
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId String
 }
 
 model Review {
   id         String   @id @default(uuid())
-  propertyId String
+  profile    Profile  @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
   profileId  String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId String
   rating     Int
   comment    String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  profile    Profile  @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Booking {
   id            String   @id @default(uuid())
+  profile       Profile  @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
+  profileId     String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId    String
   orderTotal    Int
   totalNights   Int
   checkIn       DateTime
@@ -84,8 +89,4 @@ model Booking {
   paymentStatus Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  profile       Profile  @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
-  profileId     String
-  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  propertyId    String
 }

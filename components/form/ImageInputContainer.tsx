@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import FormContainer from './FormContainer';
@@ -19,40 +19,46 @@ type ImageInputContainerProps = {
 function ImageInputContainer(props: ImageInputContainerProps) {
   const { image, name, action, text } = props;
   const [isUpdateFormVisible, setUpdateFormVisible] = useState(false);
+  const [imageFile, setImageFile] = useState<File | string>(image);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    console.log('FILE', e.target.files?.[0]);
+    console.log('URL.createObjectURL(file)', URL.createObjectURL(file));
+
+    setImageFile(file);
+    setImageFile(URL.createObjectURL(file)); // Show local preview
+  };
 
   const userIcon = (
-    <LuUser2 className="w-24 h-24 bg-primary rounded-md text-white mb-4" />
+    <LuUser2 className="w-24 h-24 bg-primary rounded text-white mb-4" />
   );
-
   return (
     <div>
-      {image ? (
-        <div className="relative size-28 border-4 rounded-md border-primary group overflow-hidden mb-2">
-          <Image
-            src={image}
-            fill
-            className=" object-cover mb-4 w-24 h-24 group-hover:scale-110 duration-200"
-            alt={name}
-          />
-        </div>
+      {imageFile ? (
+        <Image
+          src={imageFile as string}
+          alt={name}
+          width={100}
+          height={100}
+          className="rounded object-cover mb-4 w-24 h-24"
+        />
       ) : (
         userIcon
       )}
-
       <Button
         variant="outline"
         size="sm"
         onClick={() => setUpdateFormVisible((prev) => !prev)}
       >
-        {!isUpdateFormVisible ? text : 'Cancel Update'}
+        {text}
       </Button>
       {isUpdateFormVisible && (
-        <div className="max-w-lg mt-4 p-0">
-          <FormContainer action={action}>
-            {props.children}
-            <ImageInput />
-            <SubmitButton size="sm" text="Update Image" />
-          </FormContainer>
+        <div className="max-w-lg mt-4">
+          <div className="flex flex-col items-center gap-4">
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+          </div>
         </div>
       )}
     </div>

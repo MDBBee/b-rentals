@@ -30,7 +30,8 @@ export function validateWithZodSchema<T>(
 }
 
 export const imageSchema = z.object({
-  image: validateFile(),
+  image: z.string(),
+  // image: validateFile(),
 });
 
 function validateFile() {
