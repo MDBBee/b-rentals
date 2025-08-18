@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import {
   imageSchema,
@@ -6,34 +6,34 @@ import {
   propertySchema,
   validateWithZodSchema,
   createReviewSchema,
-} from './schemas';
-import db from './db';
-import { auth, clerkClient, currentUser } from '@clerk/nextjs/server';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+} from "./schemas";
+import db from "./db";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 // import { uploadImage } from './supabase';
-import { calculateTotals } from './calculateTotals';
-import { formatDate } from './format';
-import { utapi } from './uploadthing';
+import { calculateTotals } from "./calculateTotals";
+import { formatDate } from "./format";
+import { utapi } from "./uploadthing";
 const getAuthUser = async () => {
   const user = await currentUser();
   if (!user) {
-    throw new Error('You must be logged in to access this route');
+    throw new Error("You must be logged in to access this route");
   }
-  if (!user.privateMetadata.hasProfile) redirect('/profile/create');
+  if (!user.privateMetadata.hasProfile) redirect("/profile/create");
   return user;
 };
 
 const getAdminUser = async () => {
   const user = await getAuthUser();
-  if (user.id !== process.env.ADMIN_USER_ID) redirect('/');
+  if (user.id !== process.env.ADMIN_USER_ID) redirect("/");
   return user;
 };
 
 const renderError = (error: unknown): { message: string } => {
   console.log(error);
   return {
-    message: error instanceof Error ? error.message : 'An error occurred',
+    message: error instanceof Error ? error.message : "An error occurred",
   };
 };
 
@@ -43,7 +43,7 @@ export const createProfileAction = async (
 ) => {
   try {
     const user = await currentUser();
-    if (!user) throw new Error('Please login to create a profile');
+    if (!user) throw new Error("Please login to create a profile");
 
     const rawData = Object.fromEntries(formData);
     const validatedFields = validateWithZodSchema(profileSchema, rawData);
@@ -52,7 +52,7 @@ export const createProfileAction = async (
       data: {
         clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
-        profileImage: user.imageUrl ?? '',
+        profileImage: user.imageUrl ?? "",
         ...validatedFields,
       },
     });
@@ -64,7 +64,7 @@ export const createProfileAction = async (
   } catch (error) {
     return renderError(error);
   }
-  redirect('/');
+  redirect("/");
 };
 
 export const fetchProfileImage = async () => {
@@ -88,7 +88,7 @@ export const fetchProfile = async () => {
       clerkId: user.id,
     },
   });
-  if (!profile) redirect('/profile/create');
+  if (!profile) redirect("/profile/create");
   return profile;
 };
 
@@ -109,21 +109,22 @@ export const updateProfileAction = async (
       data: validatedFields,
     });
 
-    revalidatePath('/profile');
-    return { message: 'Profile updated successfully' };
+    revalidatePath("/profile");
+    return { message: "Profile updated successfully" };
   } catch (error) {
     return renderError(error);
   }
 };
 
 export const updateProfileImageAction = async (
+  prevState: any,
   formData: FormData
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
+
   try {
-    const files = formData.getAll('files');
+    const files = formData.getAll("files");
     const response = await utapi.uploadFiles(files[0] as File);
-    console.log('RESPONSE', response);
 
     const imageurl = response.data?.ufsUrl as string;
 
@@ -139,8 +140,8 @@ export const updateProfileImageAction = async (
         profileImage: fullPath,
       },
     });
-    revalidatePath('/profile');
-    return { message: 'Profile image updated successfully' };
+    revalidatePath("/profile");
+    return { message: "Profile image updated successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -153,7 +154,7 @@ export const createPropertyAction = async (
   const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
-    const file = formData.get('image') as File;
+    const file = formData.get("image") as File;
     console.log(rawData);
 
     const validatedFields = validateWithZodSchema(propertySchema, rawData);
@@ -170,11 +171,11 @@ export const createPropertyAction = async (
   } catch (error) {
     return renderError(error);
   }
-  redirect('/');
+  redirect("/");
 };
 
 export const fetchProperties = async ({
-  search = '',
+  search = "",
   category,
 }: {
   search?: string;
@@ -244,7 +245,7 @@ export const toggleFavoriteAction = async (prevState: {
       });
     }
     revalidatePath(pathname);
-    return { message: favoriteId ? 'Removed from Faves' : 'Added to Faves' };
+    return { message: favoriteId ? "Removed from Faves" : "Added to Faves" };
   } catch (error) {
     return renderError(error);
   }
@@ -303,7 +304,7 @@ export async function createReviewAction(prevState: any, formData: FormData) {
       },
     });
     revalidatePath(`/properties/${validatedFields.propertyId}`);
-    return { message: 'Review submitted successfully' };
+    return { message: "Review submitted successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -326,7 +327,7 @@ export async function fetchPropertyReviews(propertyId: string) {
       },
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
   return reviews;
@@ -365,8 +366,8 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
       },
     });
 
-    revalidatePath('/reviews');
-    return { message: 'Review deleted successfully' };
+    revalidatePath("/reviews");
+    return { message: "Review deleted successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -386,7 +387,7 @@ export const findExistingReview = async (
 
 export async function fetchPropertyRating(propertyId: string) {
   const result = await db.review.groupBy({
-    by: ['propertyId'],
+    by: ["propertyId"],
     _avg: {
       rating: true,
     },
@@ -425,7 +426,7 @@ export const createBookingAction = async (prevState: {
     select: { price: true },
   });
   if (!property) {
-    return { message: 'Property not found' };
+    return { message: "Property not found" };
   }
   const { orderTotal, totalNights } = calculateTotals({
     checkIn,
@@ -469,7 +470,7 @@ export const fetchBookings = async () => {
     },
 
     orderBy: {
-      checkIn: 'desc',
+      checkIn: "desc",
     },
   });
   return bookings;
@@ -487,8 +488,8 @@ export async function deleteBookingAction(prevState: { bookingId: string }) {
       },
     });
 
-    revalidatePath('/bookings');
-    return { message: 'Booking deleted successfully' };
+    revalidatePath("/bookings");
+    return { message: "Booking deleted successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -552,8 +553,8 @@ export async function deleteRentalAction(prevState: { propertyId: string }) {
       },
     });
 
-    revalidatePath('/rentals');
-    return { message: 'Rental deleted successfully' };
+    revalidatePath("/rentals");
+    return { message: "Rental deleted successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -575,7 +576,7 @@ export const updatePropertyAction = async (
   formData: FormData
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
-  const propertyId = formData.get('id') as string;
+  const propertyId = formData.get("id") as string;
 
   try {
     const rawData = Object.fromEntries(formData);
@@ -591,7 +592,7 @@ export const updatePropertyAction = async (
     });
 
     revalidatePath(`/rentals/${propertyId}/edit`);
-    return { message: 'Update Successful' };
+    return { message: "Update Successful" };
   } catch (error) {
     return renderError(error);
   }
@@ -602,10 +603,10 @@ export const updatePropertyImageAction = async (
   formData: FormData
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
-  const propertyId = formData.get('id') as string;
+  const propertyId = formData.get("id") as string;
 
   try {
-    const image = formData.get('image') as File;
+    const image = formData.get("image") as File;
     const validatedFields = validateWithZodSchema(imageSchema, { image });
     const fullPath = await uploadImage(validatedFields.image);
 
@@ -619,7 +620,7 @@ export const updatePropertyImageAction = async (
       },
     });
     revalidatePath(`/rentals/${propertyId}/edit`);
-    return { message: 'Property Image Updated Successful' };
+    return { message: "Property Image Updated Successful" };
   } catch (error) {
     return renderError(error);
   }
@@ -636,7 +637,7 @@ export const fetchReservations = async () => {
       },
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
     include: {
       property: {
@@ -684,7 +685,7 @@ export const fetchChartsData = async () => {
       },
     },
     orderBy: {
-      createdAt: 'asc',
+      createdAt: "asc",
     },
   });
   const bookingsPerMonth = bookings.reduce((total, current) => {
