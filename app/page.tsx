@@ -16,12 +16,12 @@ function HomePage({
         category={searchParams?.category}
         search={searchParams?.search}
       />
-      <Suspense fallback={<LoadingCards />}>
+      {/* <Suspense fallback={<LoadingCards />}>
         <PropertiesContainer
           category={searchParams?.category}
           search={searchParams?.search}
         />
-      </Suspense>
+      </Suspense> */}
     </section>
   );
 }

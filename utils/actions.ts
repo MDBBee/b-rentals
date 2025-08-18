@@ -14,6 +14,7 @@ import { redirect } from 'next/navigation';
 // import { uploadImage } from './supabase';
 import { calculateTotals } from './calculateTotals';
 import { formatDate } from './format';
+import { utapi } from './uploadthing';
 const getAuthUser = async () => {
   const user = await currentUser();
   if (!user) {
@@ -67,17 +68,17 @@ export const createProfileAction = async (
 };
 
 export const fetchProfileImage = async () => {
-  // const user = await currentUser();
-  // if (!user) return null;
-  // const profile = await db.profile.findUnique({
-  //   where: {
-  //     clerkId: user.id,
-  //   },
-  //   select: {
-  //     profileImage: true,
-  //   },
-  // });
-  // return profile?.profileImage;
+  const user = await currentUser();
+  if (!user) return null;
+  const profile = await db.profile.findUnique({
+    where: {
+      clerkId: user.id,
+    },
+    select: {
+      profileImage: true,
+    },
+  });
+  return profile?.profileImage;
 };
 
 export const fetchProfile = async () => {
@@ -116,14 +117,19 @@ export const updateProfileAction = async (
 };
 
 export const updateProfileImageAction = async (
-  prevState: any,
   formData: FormData
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
   try {
-    const image = formData.get('image') as File;
-    const validatedFields = validateWithZodSchema(imageSchema, { image });
-    // const fullPath = await uploadImage(validatedFields.image);
+    const files = formData.getAll('files');
+    const response = await utapi.uploadFiles(files[0] as File);
+    console.log('RESPONSE', response);
+
+    const imageurl = response.data?.ufsUrl as string;
+
+    const { image: fullPath } = validateWithZodSchema(imageSchema, {
+      image: imageurl,
+    });
 
     await db.profile.update({
       where: {
