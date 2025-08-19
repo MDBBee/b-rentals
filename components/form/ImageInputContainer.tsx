@@ -43,12 +43,9 @@ function ImageInputContainer({
       setDisplayedImage(image); // preview
       return;
     }
-    if (!file) return;
 
     if (file) {
       const imageBlob = URL.createObjectURL(file); // local preview
-
-      // setImageFile(file); // File for backend
       setDisplayedImage(imageBlob); // preview
     }
   };

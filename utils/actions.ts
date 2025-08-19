@@ -154,12 +154,17 @@ export const createPropertyAction = async (
   const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
-    const file = formData.get("image") as File;
-    console.log(rawData);
-
     const validatedFields = validateWithZodSchema(propertySchema, rawData);
-    const validatedFile = validateWithZodSchema(imageSchema, { image: file });
-    const fullPath = await uploadImage(validatedFile.image);
+
+    const file = formData.getAll("image") as File[];
+    if (!file) throw new Error("No image selected!");
+    const { data } = await utapi.uploadFiles(file[0]);
+    const validatedFile = validateWithZodSchema(imageSchema, {
+      image: data?.ufsUrl,
+    });
+
+    const fullPath = validatedFile.image;
+    console.log("IMAGEFP", fullPath);
 
     await db.property.create({
       data: {
@@ -181,27 +186,27 @@ export const fetchProperties = async ({
   search?: string;
   category?: string;
 }) => {
-  // const properties = await db.property.findMany({
-  //   where: {
-  //     category,
-  //     OR: [
-  //       { name: { contains: search, mode: 'insensitive' } },
-  //       { tagline: { contains: search, mode: 'insensitive' } },
-  //     ],
-  //   },
-  //   select: {
-  //     id: true,
-  //     name: true,
-  //     tagline: true,
-  //     country: true,
-  //     price: true,
-  //     image: true,
-  //   },
-  //   orderBy: {
-  //     createdAt: 'desc',
-  //   },
-  // });
-  // return properties;
+  const properties = await db.property.findMany({
+    where: {
+      category,
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { tagline: { contains: search, mode: "insensitive" } },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      tagline: true,
+      country: true,
+      price: true,
+      image: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return properties;
 };
 
 export const fetchFavoriteId = async ({
@@ -274,20 +279,20 @@ export const fetchFavorites = async () => {
 };
 
 export const fetchPropertyDetails = (id: string) => {
-  // return db.property.findUnique({
-  //   where: {
-  //     id,
-  //   },
-  //   include: {
-  //     profile: true,
-  //     bookings: {
-  //       select: {
-  //         checkIn: true,
-  //         checkOut: true,
-  //       },
-  //     },
-  //   },
-  // });
+  return db.property.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      profile: true,
+      // bookings: {
+      //   select: {
+      //     checkIn: true,
+      //     checkOut: true,
+      //   },
+      // },
+    },
+  });
 };
 
 export async function createReviewAction(prevState: any, formData: FormData) {

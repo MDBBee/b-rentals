@@ -1,26 +1,26 @@
-import FavoriteToggleButton from '@/components/card/FavoriteToggleButton';
-import PropertyRating from '@/components/card/PropertyRating';
-import BreadCrumbs from '@/components/properties/BreadCrumbs';
-import ImageContainer from '@/components/properties/ImageContainer';
-import ShareButton from '@/components/properties/ShareButton';
+import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
+import PropertyRating from "@/components/card/PropertyRating";
+import BreadCrumbs from "@/components/properties/BreadCrumbs";
+import ImageContainer from "@/components/properties/ImageContainer";
+import ShareButton from "@/components/properties/ShareButton";
 import {
-  fetchPropertyBookingDetails,
-  findExistingReview,
-} from '@/utils/actions';
-import { redirect } from 'next/navigation';
-import BookingCalender from '@/components/booking/BookingCalander';
-import PropertyDetails from '@/components/properties/PropertyDetails';
-import UserInfo from '@/components/properties/UserInfo';
-import Description from '@/components/properties/Description';
-import { Separator } from '@/components/ui/separator';
-import Amenities from '@/components/properties/Amenities';
-import dynamic from 'next/dynamic';
-import { Skeleton } from '@/components/ui/skeleton';
-import SubmitReview from '@/components/reviews/SubmitReview';
-import PropertyReviews from '@/components/reviews/PropertyReviews';
-import { auth } from '@clerk/nextjs/server';
+  fetchPropertyDetails,
+  // findExistingReview,
+} from "@/utils/actions";
+import { redirect } from "next/navigation";
+import BookingCalender from "@/components/booking/BookingCalander";
+import PropertyDetails from "@/components/properties/PropertyDetails";
+import UserInfo from "@/components/properties/UserInfo";
+import Description from "@/components/properties/Description";
+import { Separator } from "@/components/ui/separator";
+import Amenities from "@/components/properties/Amenities";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+import SubmitReview from "@/components/reviews/SubmitReview";
+import PropertyReviews from "@/components/reviews/PropertyReviews";
+import { auth } from "@clerk/nextjs/server";
 const DynamicMap = dynamic(
-  () => import('@/components/properties/PropertyMap'),
+  () => import("@/components/properties/PropertyMap"),
   {
     ssr: false,
     loading: () => <Skeleton className="h-[400px] w-full" />,
@@ -28,14 +28,15 @@ const DynamicMap = dynamic(
 );
 
 const DynamicBookingWrapper = dynamic(
-  () => import('@/components/booking/BookingWrapper'),
+  () => import("@/components/booking/BookingWrapper"),
   { ssr: false, loading: () => <Skeleton className="h-[200px] w-full" /> }
 );
 
 async function PropertyDetailsPage({ params }: { params: { id: string } }) {
-  const property = await fetchPropertyBookingDetails(params.id);
+  const property = await fetchPropertyDetails(params.id);
+  // return <div>Hello</div>;
 
-  if (!property) redirect('/');
+  if (!property) redirect("/");
   const { baths, bedrooms, beds, guests } = property;
   const details = { baths, bedrooms, beds, guests };
 
@@ -45,8 +46,8 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
   // Checking if user === property owner/Creator
   const { userId } = auth();
   const isNotOwner = property.profile.clerkId !== userId;
-  const reviewDoesNotExist =
-    userId && isNotOwner && !(await findExistingReview(userId, property.id));
+  // const reviewDoesNotExist =
+  //   userId && isNotOwner && !(await findExistingReview(userId, property.id));
 
   return (
     <section>
@@ -73,16 +74,16 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
           <Amenities amenities={property.amenities} />
           <DynamicMap countryCode={property.country} />
           {/* Reviews */}
-          {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
+          {/* {reviewDoesNotExist && <SubmitReview propertyId={property.id} />} */}
           <PropertyReviews propertyId={property.id} />
         </div>
         <div className="lg:col-span-4 flex flex-col items-center">
           {/* calendar */}
-          <DynamicBookingWrapper
+          {/* <DynamicBookingWrapper
             propertyId={property.id}
             price={property.price}
-            bookings={property.bookings}
-          />
+            // bookings={property.bookings}
+          /> */}
         </div>
       </section>
     </section>
