@@ -4,9 +4,8 @@ import BreadCrumbs from '@/components/properties/BreadCrumbs';
 import ImageContainer from '@/components/properties/ImageContainer';
 import ShareButton from '@/components/properties/ShareButton';
 import {
-  // fetchPropertyBookingDetails,
   fetchPropertyDetails,
-  findExistingReview,
+  // findExistingReview,
 } from '@/utils/actions';
 import { redirect } from 'next/navigation';
 import BookingCalender from '@/components/booking/BookingCalander';
@@ -35,6 +34,7 @@ const DynamicBookingWrapper = dynamic(
 
 async function PropertyDetailsPage({ params }: { params: { id: string } }) {
   const property = await fetchPropertyDetails(params.id);
+  // return <div>Hello</div>;
 
   if (!property) redirect('/');
   const { baths, bedrooms, beds, guests } = property;
@@ -46,8 +46,8 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
   // Checking if user === property owner/Creator
   const { userId } = auth();
   const isNotOwner = property.profile.clerkId !== userId;
-  const reviewDoesNotExist =
-    userId && isNotOwner && !(await findExistingReview(userId, property.id));
+  // const reviewDoesNotExist =
+  //   userId && isNotOwner && !(await findExistingReview(userId, property.id));
 
   return (
     <section>
@@ -74,7 +74,7 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
           <Amenities amenities={property.amenities} />
           <DynamicMap countryCode={property.country} />
           {/* Reviews */}
-          {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
+          {/* {reviewDoesNotExist && <SubmitReview propertyId={property.id} />} */}
           <PropertyReviews propertyId={property.id} />
         </div>
         <div className="lg:col-span-4 flex flex-col items-center">
