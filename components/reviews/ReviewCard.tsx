@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import Rating from './Rating';
 import Comment from './Comment';
+import Image from 'next/image';
 type ReviewCardProps = {
   reviewInfo: {
     comment: string;
@@ -14,15 +15,18 @@ type ReviewCardProps = {
 
 function ReviewCard({ reviewInfo, children }: ReviewCardProps) {
   const date = new Date(reviewInfo.createdAt).toDateString();
+
   return (
     <Card className="relative">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex">
-            <img
+            <Image
               src={reviewInfo.image}
               alt="profile"
               className="w-12 h-12 rounded-full object-cover"
+              width={48}
+              height={48}
             />
             <div className="ml-4">
               <h3 className="text-sm font-bold capitalize mb-1">

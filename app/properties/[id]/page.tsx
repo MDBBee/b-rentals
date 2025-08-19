@@ -4,7 +4,8 @@ import BreadCrumbs from '@/components/properties/BreadCrumbs';
 import ImageContainer from '@/components/properties/ImageContainer';
 import ShareButton from '@/components/properties/ShareButton';
 import {
-  fetchPropertyBookingDetails,
+  // fetchPropertyBookingDetails,
+  fetchPropertyDetails,
   findExistingReview,
 } from '@/utils/actions';
 import { redirect } from 'next/navigation';
@@ -33,7 +34,7 @@ const DynamicBookingWrapper = dynamic(
 );
 
 async function PropertyDetailsPage({ params }: { params: { id: string } }) {
-  const property = await fetchPropertyBookingDetails(params.id);
+  const property = await fetchPropertyDetails(params.id);
 
   if (!property) redirect('/');
   const { baths, bedrooms, beds, guests } = property;

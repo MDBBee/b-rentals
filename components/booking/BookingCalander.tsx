@@ -19,6 +19,7 @@ function BookingCalendar() {
 
   // Normal blocking
   const bookings = useProperty((state) => state.bookings);
+
   // [{from:_to:_}, {from:_to:_}...]
   const blockedPeriods = generateBlockedPeriods({
     bookings,
@@ -29,6 +30,7 @@ function BookingCalendar() {
   // {date:true, date:true...}
   const unavailableDates = generateDisabledDates(blockedPeriods);
 
+  // 90d5c74a-7346-42a2-9b9e-ac15719851f4
   useEffect(() => {
     // ["date","date"....]
     const selectedRange = generateDateRange(range);
