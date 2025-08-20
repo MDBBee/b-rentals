@@ -685,6 +685,7 @@ export const fetchStats = async () => {
 export const fetchChartsData = async () => {
   await getAdminUser();
   const date = new Date();
+
   date.setMonth(date.getMonth() - 6);
   const sixMonthsAgo = date;
 
@@ -699,6 +700,7 @@ export const fetchChartsData = async () => {
       createdAt: 'asc',
     },
   });
+
   const bookingsPerMonth = bookings.reduce((total, current) => {
     const date = formatDate(current.createdAt, true);
     const existingEntry = total.find((entry) => entry.date === date);

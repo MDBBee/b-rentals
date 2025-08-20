@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
           // the product you want to sell
           quantity: 1,
           price_data: {
-            currency: 'eur',
+            currency: 'usd',
 
             product_data: {
               name: `${name}`,
