@@ -8,8 +8,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 const inter = Nova_Square({ subsets: ['latin'], weight: '400' });
 
 export const metadata: Metadata = {
-  title: 'HomeAway Draft',
-  description: 'Feel at home, away from home.',
+  title: 'b-rentals',
+  description: 'A feeling of home while Away.',
 };
 
 export default function RootLayout({
